@@ -40,7 +40,7 @@ Afterwards commit `requirements.txt` and `requirements.txt.freeze`.
 ### Step 1: setup local infra + POC 
 * [x] Setup a local kafka and postgresql and add makefile to run them in the background
 * [x] Build producer: sending a simple message through kafka
-* [] Build consumer: move events into a table
+* [x] Build consumer: move events into a table
 
 ### Step 2: Implement the requirements
 * [] Implement the requirements at the consumer and producer side
@@ -55,3 +55,15 @@ Afterwards commit `requirements.txt` and `requirements.txt.freeze`.
 * [] Figure out how to spin up the infra via `avn` and document it
 * [] Run the integration tests agains Aiven Infra
 
+## Sources:
+
+The initial docker setup to use kafka locally + python example: 
+* https://towardsdatascience.com/kafka-docker-python-408baf0e1088
+* https://medium.com/big-data-engineering/hello-kafka-world-the-complete-guide-to-kafka-with-docker-and-python-f788e2588cfc
+* https://medium.com/better-programming/a-simple-apache-kafka-cluster-with-docker-kafdrop-and-python-cf45ab99e2b9
+* https://stackoverflow.com/questions/52438822/docker-kafka-w-python-consumer/52440056
+* https://help.aiven.io/en/articles/489572-getting-started-with-aiven-kafka
+
+Makefile / virtualenv stuff:
+* https://github.com/mara/mara-example-project-1/blob/master/.scripts/mara-app/install.mk
+* https://unix.stackexchange.com/questions/235223/makefile-include-env-file

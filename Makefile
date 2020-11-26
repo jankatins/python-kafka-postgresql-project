@@ -15,7 +15,7 @@ include .scripts/local-setup.mk
 
 run-local: setup run-infra-local
 	# spin up apps in parallel in the foreground
-	make -j run_producer_local
+	make -j run_producer_local run_consumer_local
 	echo "done."
 
 run_%_local:

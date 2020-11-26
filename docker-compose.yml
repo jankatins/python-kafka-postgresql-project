@@ -43,10 +43,13 @@ services:
   db:
     image: postgres
     restart: always
+    ports:
+    # I've locally already a postgres running
+      - "${CONSUMER_POSTGRES_PORT}:5432"
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${CONSUMER_POSTGRES_PASSWORD}
+      POSTGRES_USER: ${CONSUMER_POSTGRES_USER}
+      POSTGRES_DB: ${CONSUMER_POSTGRES_DB}
 
 #parse-engine:
 #    build: .
