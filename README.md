@@ -39,7 +39,7 @@ Afterwards commit `requirements.txt` and `requirements.txt.freeze`.
 
 ### Step 1: setup local infra + POC 
 * [x] Setup a local kafka and postgresql and add makefile to run them in the background
-* [] Build producer: sending a simple message through kafka
+* [x] Build producer: sending a simple message through kafka
 * [] Build consumer: move events into a table
 
 ### Step 2: Implement the requirements
