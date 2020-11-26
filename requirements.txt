@@ -8,6 +8,12 @@ psycopg2-binary>=2.8.0
 # commandline interface
 click>=7.1
 
+# scraping and pinging
+# Usually I would use requests, but this seemed like a nice time to try httpx out, which seems to be the
+# successor due to asyncio support: https://github.com/encode/httpx
+# -> "considered in beta [...] API stable [...] A 1.0 release is expected to be issued sometime in late 2020."
+httpx>=0.16.0<0.17
+
 # testing
 pytest>=6.1
 
