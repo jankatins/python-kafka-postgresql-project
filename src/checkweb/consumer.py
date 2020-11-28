@@ -65,10 +65,9 @@ def migrate_db():
     """Creates the required tables"""
     # I know, crude, but it works...
     # v0
-    try:
-        with pg.postgres_cursor_context() as cursor:
-            cursor.execute("""
-CREATE TABLE public.content(
+    with pg.postgres_cursor_context() as cursor:
+        cursor.execute("""
+CREATE TABLE IF NOT EXISTS public.content(
 timestamp             TIMESTAMPTZ,
 url                   TEXT,
 response_time_seconds DOUBLE PRECISION,
@@ -76,7 +75,3 @@ status_code           SMALLINT,
 found_regex_pattern   BOOLEAN
 );
 """)
-    except Exception as e:
-        # expected when we are already at v0
-        print(repr(e))
-
