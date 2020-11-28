@@ -10,7 +10,7 @@
 # This is initially based on the examples from https://towardsdatascience.com/kafka-docker-python-408baf0e1088
 
 from kafka import KafkaConsumer
-from . import config as c
+from . import config
 import json
 from . import postgres as pg
 import datetime
@@ -19,6 +19,7 @@ import time
 
 def main():
     migrate_db()
+    c = config.load_config()
     consumer = KafkaConsumer(
         c.KAFKA_TOPIC,
         bootstrap_servers=[c.KAFKA_BOOTSTRAP_SERVER],

@@ -17,10 +17,11 @@ import time
 import httpx
 from kafka import KafkaProducer
 
-from . import config as c
+from . import config
 
 
 def main():
+    c = config.load_config()
     producer = KafkaProducer(
         bootstrap_servers=[c.KAFKA_BOOTSTRAP_SERVER],
         value_serializer=lambda x: json.dumps(x).encode('utf-8')

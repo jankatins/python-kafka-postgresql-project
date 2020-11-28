@@ -8,16 +8,22 @@ import contextlib
 import psycopg2
 import psycopg2.extensions
 
-from . import config as c
+from . import config
 
 
 @contextlib.contextmanager
-def postgres_cursor_context(user: str = c.CONSUMER_POSTGRES_USER,
-                            password: str = c.CONSUMER_POSTGRES_PASSWORD,
-                            host: str = c.CONSUMER_POSTGRES_HOST,
-                            port: int = c.CONSUMER_POSTGRES_PORT,
-                            database: str = c.CONSUMER_POSTGRES_DB) -> 'psycopg2.extensions.cursor':
+def postgres_cursor_context(user: str = None,
+                            password: str = None,
+                            host: str = None,
+                            port: int = None,
+                            database: str = None) -> 'psycopg2.extensions.cursor':
     """Creates a context with a psycopg2 cursor for a database alias"""
+    c = config.load_config()
+    user = user if user is not None else c.CONSUMER_POSTGRES_USER
+    password = password if password is not None else c.CONSUMER_POSTGRES_PASSWORD
+    host = host if host is not None else c.CONSUMER_POSTGRES_HOST
+    port = port if port is not None else c.CONSUMER_POSTGRES_PORT
+    database = database if database is not None else c.CONSUMER_POSTGRES_DB
 
     connection = psycopg2.connect(dbname=database, user=user, password=password,
                                   host=host, port=port)  # type: psycopg2.extensions.connection
