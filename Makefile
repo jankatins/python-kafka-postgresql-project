@@ -28,8 +28,12 @@ stop-infra-local:
 	# spin down the compose stuff
 	docker-compose --env-file local.env down
 
-test: setup
-	.venv/bin/pytest
+tests: unit-tests
+
+unit-tests: setup .copy_check_event_definition
+	# unittests -> without infrastructure/IO
+	cd producer && ../.venv/bin/python -m pytest
+	cd consumer && ../.venv/bin/python -m pytest
 
 .copy_check_event_definition:
 	cp producer/app/check_event.py consumer/app/check_event.py

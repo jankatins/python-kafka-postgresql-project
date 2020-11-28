@@ -17,6 +17,13 @@ To stop the local infrastructure (kafak, zookeeper, postgres):
 make stop-infra-local
 ```
 
+## Run Tests
+
+```bash
+# runs the unit tests on both the producer and the consumer in pytest
+make tests
+```
+
 ## Maintainance
 
 ### Updating or installing new python packages
