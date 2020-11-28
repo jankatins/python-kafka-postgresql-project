@@ -13,7 +13,7 @@ all : run-local
 include .scripts/local-setup.mk
 
 
-run-local: setup run-infra-local
+run-local: setup run-infra-local .copy_check_event_definition
 	# spin up apps in parallel in the foreground
 	make -j run_producer_local run_consumer_local
 	echo "done."
@@ -30,3 +30,6 @@ stop-infra-local:
 
 test: setup
 	.venv/bin/pytest
+
+.copy_check_event_definition:
+	cp producer/app/check_event.py consumer/app/check_event.py
