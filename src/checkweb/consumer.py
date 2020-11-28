@@ -9,12 +9,14 @@
 
 # This is initially based on the examples from https://towardsdatascience.com/kafka-docker-python-408baf0e1088
 
-from kafka import KafkaConsumer
-from . import config
-import json
-from . import postgres as pg
 import datetime
-import time
+import json
+
+from kafka import KafkaConsumer
+
+from . import config
+from . import check_event
+from . import postgres as pg
 
 
 def main():
@@ -31,34 +33,22 @@ def main():
     # works as an endless loop
     for event in consumer:
         event_data = event.value
-        # {
-        #  'timestamp': ..., # float, seconds since epoch
-        #  'url': 'https://google.com', # str, url
-        #  'response_time_seconds': ..., # float, seconds
-        #  'status_code': 200, # int
-        #  'found_regex_pattern': True # bool
-        #  }
-        print(event_data)
 
-        # "validate": at least make sure it fits the spec and all data is there
-        validated_data = {}
+        # does some validation
         try:
-            # always pass in a tz! https://blog.ganssle.io/articles/2019/11/utcnow.html
-            validated_data['timestamp'] = datetime.datetime.fromtimestamp(event_data['timestamp'],
-                                                                          tz=datetime.timezone.utc)
-            validated_data['url'] = str(event_data['url'])
-            validated_data['response_time_seconds'] = float(event_data['response_time_seconds'])
-            validated_data['status_code'] = int(event_data['status_code'])
-            validated_data['found_regex_pattern'] = bool(event_data['found_regex_pattern'])
-        except KeyError as e:
+            event = check_event.CheckEvent.from_dict(event_data)
+
+        except (RuntimeError, AssertionError) as e:
             print(f"{e!r}: ignoring event: {event_data}")
             continue
 
         with pg.postgres_cursor_context() as cursor:
             cursor.execute(f"""
-                INSERT INTO content(timestamp, url, response_time_seconds, status_code, found_regex_pattern)
-                VALUES (%(timestamp)s, %(url)s, %(response_time_seconds)s, %(status_code)s, %(found_regex_pattern)s);
-            """, validated_data)
+                INSERT INTO content(timestamp, url, response_time_seconds, status_code, found_regex_pattern, exception_message, version)
+                VALUES 
+                (%(timestamp)s, %(url)s, %(response_time_seconds)s, %(status_code)s, %(found_regex_pattern)s, %(exception_message)s, %(version)s)
+                ;
+            """, event.to_database_dict())
 
 
 def migrate_db():
@@ -74,4 +64,13 @@ response_time_seconds DOUBLE PRECISION,
 status_code           SMALLINT,
 found_regex_pattern   BOOLEAN
 );
+""")
+
+    with pg.postgres_cursor_context() as cursor:
+        cursor.execute("""
+-- don't block for too long in rolling upgrades
+SET lock_timeout TO '15s';
+ALTER TABLE public.content ADD COLUMN IF NOT EXISTS exception_message TEXT NULL;
+-- requires pg11 
+ALTER TABLE public.content ADD COLUMN IF NOT EXISTS version SMALLINT NOT NULL DEFAULT 0;
 """)

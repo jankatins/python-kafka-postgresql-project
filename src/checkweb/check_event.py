@@ -5,6 +5,7 @@
 
 import dataclasses
 import typing as t
+import datetime
 
 
 @dataclasses.dataclass()
@@ -29,6 +30,16 @@ class CheckEvent():
     def to_dict(self):
         """Converts this CheckEvent instance to a dict"""
         return dataclasses.asdict(self)
+
+    def to_database_dict(self):
+        """Converts to a dict which is suiteable to put into a DB
+
+        Mainly converts the epoch timestamp to a real datetime with UTC timezone
+        """
+        db_dict = dataclasses.asdict(self)
+        # always pass in a tz! https://blog.ganssle.io/articles/2019/11/utcnow.html
+        db_dict['timestamp'] = datetime.datetime.fromtimestamp(self.timestamp, tz=datetime.timezone.utc)
+        return db_dict
 
     @classmethod
     def from_dict(cls, d: dict):
