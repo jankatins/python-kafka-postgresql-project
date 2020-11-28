@@ -13,13 +13,13 @@ all : run-local
 include .scripts/local-setup.mk
 
 
-run-local: setup run-infra-local .copy_check_event_definition
+run-local: setup run-infra-local
 	# spin up apps in parallel in the foreground
 	make -j run_producer_local run_consumer_local
 	echo "done."
 
 run_%_local:
-	source .venv/bin/activate && cd $* && python3 -m app
+	source .venv/bin/activate && cd src && python3 -m checkweb $*
 
 run-infra-local:
 	docker-compose --env-file local.env up -d
@@ -30,10 +30,7 @@ stop-infra-local:
 
 tests: unit-tests
 
-unit-tests: setup .copy_check_event_definition
+unit-tests: setup
 	# unittests -> without infrastructure/IO
-	cd producer && ../.venv/bin/python -m pytest
-	cd consumer && ../.venv/bin/python -m pytest
+	cd src && ../.venv/bin/python -m pytest
 
-.copy_check_event_definition:
-	cp producer/app/check_event.py consumer/app/check_event.py

@@ -1,13 +1,13 @@
-# python-kafka-postgresql-project
+# checkweb
 
-Driving messages through kafka into a postgresql DB
+Checks a website and sends the results as events through kafka into a postgresql DB
 
-## Install and initial run
+## Install and running with local infrastructure
 
 ```bash
-# setups local virtualenv
+# setups local virtualenv from requirements.txt.freeze
 make setup
-# runs the infra in the background via docker-compose and the two apps in the foreground
+# runs the (local) infra in the background via docker-compose and the two apps in the foreground
 make run
 ```
 
@@ -28,11 +28,14 @@ make tests
 
 ### Updating or installing new python packages
 
-Add all directly used packages to `requirements.txt`
+Add all directly used packages to `requirements.txt` and run:
 
 ```bash
 make update-packages
 ```
+
+This installs / updates all packages in `requirements.txt` and puts the currently installed packages into 
+`requirements.txt.freeze`.
 
 Ensure that everything still works by running tests
 

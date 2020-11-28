@@ -1,9 +1,6 @@
 """The CheckEvent
 
-This file is defined at the producer and automatically copied to the consumer by the makefile.
-Only edit at the producer side!
-
-->  Poor man's substitution for a schema definition in a central place...
+->  Poor man's replacement for a event schema definition ...
 """
 
 import dataclasses

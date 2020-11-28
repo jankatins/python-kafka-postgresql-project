@@ -1,6 +1,6 @@
 import pytest
 
-from app.check_event import CheckEvent
+from checkweb.check_event import CheckEvent
 
 def test_serialisation():
     e = CheckEvent(timestamp=1,
