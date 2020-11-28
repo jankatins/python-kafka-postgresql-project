@@ -53,10 +53,10 @@ Afterwards commit `requirements.txt` and `requirements.txt.freeze`.
 * [x] Build consumer: move events into a table
 
 ### Step 2: Implement the requirements
-* [] Implement the requirements at the consumer and producer side
+* [x] Implement the requirements at the consumer and producer side
   
 ### Step 3: Implement testing and polish
-* [] Implement unittests with mocs
+* [x] Implement unittests with mocks
 * [] Implement an integration test which spins up new local infra, runs a few minutes and then checks that the expected 
   data is in the DB + the same check with failing websites
 * [] Polish the code

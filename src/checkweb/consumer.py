@@ -33,22 +33,27 @@ def main():
     # works as an endless loop
     for event in consumer:
         event_data = event.value
+        handle_event_dict(event_data)
 
-        # does some validation
-        try:
-            event = check_event.CheckEvent.from_dict(event_data)
+def handle_event_dict(event_data: dict):
+    """ Handle a single event and save it to the database
 
-        except (RuntimeError, AssertionError) as e:
-            print(f"{e!r}: ignoring event: {event_data}")
-            continue
+    :param event_data: a dict which needs to be convertible to a CheckEvent. data not convertable will be logged and ignored
+    """
+    # does some validation
+    try:
+        event = check_event.CheckEvent.from_dict(event_data)
+    except (RuntimeError, AssertionError) as e:
+        print(f"{e!r}: ignoring event: {event_data}")
+        return
 
-        with pg.postgres_cursor_context() as cursor:
-            cursor.execute(f"""
-                INSERT INTO content(timestamp, url, response_time_seconds, status_code, found_regex_pattern, exception_message, version)
-                VALUES 
-                (%(timestamp)s, %(url)s, %(response_time_seconds)s, %(status_code)s, %(found_regex_pattern)s, %(exception_message)s, %(version)s)
-                ;
-            """, event.to_database_dict())
+    with pg.postgres_cursor_context() as cursor:
+        cursor.execute(f"""
+            INSERT INTO content(timestamp, url, response_time_seconds, status_code, found_regex_pattern, exception_message, version)
+            VALUES 
+            (%(timestamp)s, %(url)s, %(response_time_seconds)s, %(status_code)s, %(found_regex_pattern)s, %(exception_message)s, %(version)s)
+            ;
+        """, event.to_database_dict())
 
 
 def migrate_db():
