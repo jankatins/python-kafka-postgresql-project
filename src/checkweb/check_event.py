@@ -34,7 +34,11 @@ class CheckEvent():
     def from_dict(cls, d: dict):
         """Builds a CheckEvent from the dict"""
         version = d.get('version')
-        if version == 1:
+        if version is None:
+            # initial versions of the event had no version nor a exception_message
+            # we can ignore the exception_message case as the producer would error so also would not send such an event
+            return CheckEvent(**d, version=0)
+        elif version == 1:
             return CheckEvent(**d)
         else:
             raise RuntimeError(f"Cannot build a CheckEvent from dict: {d}")
