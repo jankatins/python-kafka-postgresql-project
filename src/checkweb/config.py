@@ -11,6 +11,7 @@ class ProducerConfig():
     def __init__(self):
         self.KAFKA_BOOTSTRAP_SERVER = f"{os.environ['KAFKA_BOOTSTRAP_SERVER']}"
         self.KAFKA_TOPIC = f"{os.environ['KAFKA_TOPIC']}"
+        self.KAFKA_CERT_PATH = os.environ.get('KAFKA_CERT_PATH', None)
 
         # A bit too forgiving for my taste, but it will error in other places if a config is undefined...
         # Should have probably gone for a .env config solution...
@@ -30,6 +31,7 @@ class ProducerConfig():
             self.CONSUMER_POSTGRES_DB = f"{os.environ['CONSUMER_POSTGRES_DB']}"
             self.CONSUMER_POSTGRES_HOST = f"{os.environ.get('CONSUMER_POSTGRES_HOST', 'db')}"
             self.CONSUMER_POSTGRES_PORT = int(f"{os.environ.get('CONSUMER_POSTGRES_PORT', '5432')}")
+            self.CONSUMER_POSTGRES_SSL_MODE = os.environ.get('CONSUMER_POSTGRES_SSL_MODE', None)
         except KeyError as e:
             print(f"Missing configuration for CONSUMER: {e!r}")
 

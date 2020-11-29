@@ -25,9 +25,19 @@ from . import check_event
 def main():
     """Runs the producer with the given configuration"""
     c = config.load_config()
+    auth_kwargs = {}
+    if c.KAFKA_CERT_PATH:
+        cert_path = c.KAFKA_CERT_PATH
+        auth_kwargs.update(dict(
+            security_protocol="SSL",
+            ssl_cafile=f"{cert_path}/ca.pem",
+            ssl_certfile=f"{cert_path}/service.cert",
+            ssl_keyfile=f"{cert_path}/service.key",
+        ))
     producer = KafkaProducer(
         bootstrap_servers=[c.KAFKA_BOOTSTRAP_SERVER],
-        value_serializer=lambda x: json.dumps(x).encode('utf-8')
+        value_serializer=lambda x: json.dumps(x).encode('utf-8'),
+        **auth_kwargs
     )
     max_loops = c.PRODUCER_MAX_LOOPS
     wait_between_scrapes = c.PRODUCER_INTERVAL_SECONDS

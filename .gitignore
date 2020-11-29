@@ -2,6 +2,11 @@
 *.env
 .env
 
+# The downlaoded files for aiven kafka
+service.cert
+service.key
+ca.pem
+
 instructions.md
 
 # IDE

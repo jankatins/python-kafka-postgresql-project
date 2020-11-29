@@ -22,13 +22,23 @@ from . import postgres as pg
 def main():
     migrate_db()
     c = config.load_config()
+    auth_kwargs = {}
+    if c.KAFKA_CERT_PATH:
+        cert_path = c.KAFKA_CERT_PATH
+        auth_kwargs.update(dict(
+            security_protocol="SSL",
+            ssl_cafile=f"{cert_path}/ca.pem",
+            ssl_certfile=f"{cert_path}/service.cert",
+            ssl_keyfile=f"{cert_path}/service.key",
+        ))
     consumer = KafkaConsumer(
         c.KAFKA_TOPIC,
         bootstrap_servers=[c.KAFKA_BOOTSTRAP_SERVER],
         auto_offset_reset='earliest',
         enable_auto_commit=True,
         group_id='consumer',
-        value_deserializer=lambda x: json.loads(x.decode('utf-8'))
+        value_deserializer=lambda x: json.loads(x.decode('utf-8')),
+        **auth_kwargs
     )
     # works as an endless loop
     for event in consumer:
@@ -46,6 +56,8 @@ def handle_event_dict(event_data: dict):
     except RuntimeError as e:
         print(f"{e!r}: ignoring event: {event_data}")
         return
+
+    print(f"Consuming event: {event}")
 
     with pg.postgres_cursor_context() as cursor:
         cursor.execute(f"""

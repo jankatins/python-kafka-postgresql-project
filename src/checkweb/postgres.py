@@ -16,7 +16,8 @@ def postgres_cursor_context(user: str = None,
                             password: str = None,
                             host: str = None,
                             port: int = None,
-                            database: str = None) -> 'psycopg2.extensions.cursor':
+                            database: str = None,
+                            sslmode: str = None) -> 'psycopg2.extensions.cursor':
     """Creates a context with a psycopg2 cursor for a database alias"""
     c = config.load_config()
     user = user if user is not None else c.CONSUMER_POSTGRES_USER
@@ -24,9 +25,10 @@ def postgres_cursor_context(user: str = None,
     host = host if host is not None else c.CONSUMER_POSTGRES_HOST
     port = port if port is not None else c.CONSUMER_POSTGRES_PORT
     database = database if database is not None else c.CONSUMER_POSTGRES_DB
+    ssl_mode = sslmode if sslmode is not None else c.CONSUMER_POSTGRES_SSL_MODE
 
     connection = psycopg2.connect(dbname=database, user=user, password=password,
-                                  host=host, port=port)  # type: psycopg2.extensions.connection
+                                  host=host, port=port, sslmode=ssl_mode)  # type: psycopg2.extensions.connection
     cursor = connection.cursor()  # type: psycopg2.extensions.cursor
     try:
         yield cursor
