@@ -72,7 +72,7 @@ make stop-infra-aiven
 
 Destroying the Infrastructure is only possible in the [Aiven UI](https://console.aiven.io/).
 
-## Run locally in docker against aiven infrastructure
+## Run locally in docker against Aiven infrastructure
 
 Build the Image:
 
