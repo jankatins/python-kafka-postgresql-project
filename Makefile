@@ -58,3 +58,29 @@ run-%-aiven: aiven.env
 
 integration-tests-aiven: start-infra-aiven
 	CHECKWEB_ENV_PATH=aiven.env .venv/bin/python3 ./integration_tests.py
+
+build-docker:
+	docker build -t checkweb:latest -f ./Dockerfile .
+
+run-docker-aiven:
+	make -j run-docker-aiven-producer run-docker-aiven-consumer
+	make show-docker-logs
+
+run-docker-aiven-%:
+	docker run -itd --rm --name checkweb-$* --env-file=aiven.env --env KAFKA_CERT_PATH=/ \
+		-v "$(CURDIR)"/service.cert:/service.cert \
+		-v "$(CURDIR)"/service.key:/service.key \
+		-v "$(CURDIR)"/ca.pem:/ca.pem \
+		checkweb:latest $*
+
+show-docker-logs:
+	make -j show-docker-logs-producer show-docker-logs-consumer
+
+show-docker-logs-%:
+	docker logs -f checkweb-$*
+
+stop-docker:
+	make -j stop-docker-producer stop-docker-consumer
+
+stop-docker-%:
+	docker stop checkweb-$*

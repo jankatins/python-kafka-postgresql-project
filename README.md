@@ -72,6 +72,29 @@ make stop-infra-aiven
 
 Destroying the Infrastructure is only possible in the [Aiven UI](https://console.aiven.io/).
 
+## Run locally in docker against aiven infrastructure
+
+Build the Image:
+
+```bash
+make build-docker
+```
+
+Run the docker container in detached mode and then follow the logs of both containers. This expects a 
+configured `aiven.env` file. 
+
+```bash
+make run-docker-aiven
+```
+
+`ctrl+c` will stop following the log but not the containers!
+
+To shutdown both container:
+
+```bash
+make stop-docker
+```
+
 ## Maintainance
 
 ### Updating or installing new python packages
@@ -108,7 +131,7 @@ Afterwards commit `requirements.txt` and `requirements.txt.freeze`.
 * [x] Implement an integration test which spins up new local infra, runs a few loops and then checks that the expected 
   data is in the DB + the same check with failing websites
 * [x] Polish the code
-* [ ] Proper Packaging: dockerfile? setup.py? 
+* [x] Proper Packaging: dockerfile? setup.py? -> just a Dockerfile for now
 
 ### Step 4: Connect to Aiven infra and document  
 * [x] Figure out how to spin up the infra via `avn` and document it
