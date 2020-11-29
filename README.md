@@ -8,7 +8,7 @@ Checks a website and sends the results as events through kafka into a postgresql
 # setups local virtualenv from requirements.txt.freeze
 make setup
 # runs the (local) infra in the background via docker-compose and the two apps in the foreground
-make run
+make run-local
 ```
 
 To stop the local infrastructure (kafak, zookeeper, postgres):
@@ -19,10 +19,51 @@ make stop-infra-local
 
 ## Run Tests
 
+Runs the unit tests in pytest and the integration_tests.py against local infrastructure
+
 ```bash
-# runs the unit tests on both the producer and the consumer in pytest
 make tests
 ```
+
+## Running against Aiven infrastructure
+
+The makefile targets expect that `avn` is setup with a default project:
+
+```bash
+source .venv/bin/activate # gets you avn installed in the virtualenv
+avn user login
+# create a new project or reuse your current default one
+avn project create <project-name>
+avn project switch <project-name>
+# maybe: switch the current project to a different cloud provider
+avn project update --cloud do-fra
+```
+
+Creates and configures the needed services, downloads the needed credential files and 
+generates the `aiven.env` file which needs to be adjusted:
+
+```bash
+# read through the errors, it might be needed to run this twice to add the kafka topic
+make setup-infra-aiven
+```
+
+Afterwards edit `aiven.env` to adjust the `*POSTGRES*` and `KAFKA_*` settings (`HOST`, `USER`, `PASSWORD`,...). The 
+needed settings are available in the [Aiven UI of the respectiv service](https://console.aiven.io/) 
+
+Afterwards you can run the local producer/consumer against the Aiven infrastructure
+
+```bash
+# this also automatically starts the Aiven infra if it was stoped
+make run-aiven
+```
+
+To stop the aiven infrastructure:
+
+```bash
+make stop-infra-aiven
+```
+
+Destroying the Infrastructure is only possible in the [Aiven UI](https://console.aiven.io/).
 
 ## Maintainance
 
@@ -63,7 +104,7 @@ Afterwards commit `requirements.txt` and `requirements.txt.freeze`.
 * [ ] Proper Packaging: dockerfile? setup.py? 
 
 ### Step 4: Connect to Aiven infra and document  
-* [ ] Figure out how to spin up the infra via `avn` and document it
+* [x] Figure out how to spin up the infra via `avn` and document it
 * [ ] Run the integration tests agains Aiven Infra
 
 ## Sources:

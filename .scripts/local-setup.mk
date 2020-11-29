@@ -1,4 +1,4 @@
-setup: .venv/.finished_venv_install local.env
+setup-local: .venv/.finished_venv_install local.env
 
 local.env:
 	cp local.env.example local.env
