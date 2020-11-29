@@ -28,6 +28,7 @@ def test_from_dict_creation_from_v0():
     ({'status_code': -1}, 'status_code'),
     ({'response_time_seconds': -1.2}, 'response_time_seconds'),
     ({'url': None}, 'url'),
+    ({'version': 99}, 'url'),
 ])
 def test_from_dict_creation_from_bad_events(bad_content, msg):
     # create a good dict and then change it to a bad one
@@ -41,7 +42,7 @@ def test_from_dict_creation_from_bad_events(bad_content, msg):
 
     event.update(bad_content)
 
-    with pytest.raises(AssertionError, match=msg):
+    with pytest.raises(RuntimeError, match=msg):
         CheckEvent.from_dict(event)
 
 @pytest.mark.parametrize('good_content', [

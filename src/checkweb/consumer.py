@@ -40,10 +40,10 @@ def handle_event_dict(event_data: dict):
 
     :param event_data: a dict which needs to be convertible to a CheckEvent. data not convertable will be logged and ignored
     """
-    # does some validation
     try:
+        # does some validation
         event = check_event.CheckEvent.from_dict(event_data)
-    except (RuntimeError, AssertionError) as e:
+    except RuntimeError as e:
         print(f"{e!r}: ignoring event: {event_data}")
         return
 

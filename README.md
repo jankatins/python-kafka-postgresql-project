@@ -59,11 +59,12 @@ Afterwards commit `requirements.txt` and `requirements.txt.freeze`.
 * [x] Implement unittests with mocks
 * [x] Implement an integration test which spins up new local infra, runs a few loops and then checks that the expected 
   data is in the DB + the same check with failing websites
-* [] Polish the code
+* [x] Polish the code
+* [ ] Proper Packaging: dockerfile? setup.py? 
 
 ### Step 4: Connect to Aiven infra and document  
-* [] Figure out how to spin up the infra via `avn` and document it
-* [] Run the integration tests agains Aiven Infra
+* [ ] Figure out how to spin up the infra via `avn` and document it
+* [ ] Run the integration tests agains Aiven Infra
 
 ## Sources:
 

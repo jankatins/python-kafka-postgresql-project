@@ -22,10 +22,14 @@ class CheckEvent():
         # some validation, should probably raise a better exception
         if self.exception_message:
             msg = "If exception_message is set, status_code and found_regex_pattern must both be None"
-            assert self.status_code is None and self.found_regex_pattern is None, msg
-        assert self.response_time_seconds > 0, "response_time_seconds must be greater than 0"
-        assert self.status_code is None or self.status_code > 0, "status_code must be None or an integer >0"
-        assert self.url, "url must be set to a non-empty string"
+            if not (self.status_code is None and self.found_regex_pattern is None):
+                raise RuntimeError(msg)
+        if not (self.response_time_seconds > 0):
+            raise RuntimeError("response_time_seconds must be greater than 0")
+        if not (self.status_code is None or self.status_code > 0):
+            raise RuntimeError("status_code must be None or an integer >0")
+        if not self.url:
+            raise RuntimeError("url must be set to a non-empty string")
 
     def to_dict(self):
         """Converts this CheckEvent instance to a dict"""
