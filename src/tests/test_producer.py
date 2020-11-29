@@ -8,7 +8,7 @@ import checkweb.producer
 import checkweb.check_event
 
 
-def test_check_successfull(httpx_mock):
+def test_check_website_successful(httpx_mock):
     url = 'http://www.google.com.doesnotexist'
     pattern = 'google'
     httpx_mock.add_response(data=f"blablablkdsflkjdsf {pattern} kjgdsfk kjsadksajfg")
@@ -22,7 +22,7 @@ def test_check_successfull(httpx_mock):
     assert event.response_time_seconds > 0
 
 
-def test_check_no_pattern(httpx_mock):
+def test_check_website_pattern_not_found(httpx_mock):
     url = 'http://www.google.com.doesnotexist'
     pattern = 'google'
     httpx_mock.add_response(data=f"blablablkdsflkjdsf kjgdsfk kjsadksajfg")
@@ -47,7 +47,8 @@ def test_check_website_no_regex_given(httpx_mock):
     assert event.found_regex_pattern is None
     assert event.response_time_seconds > 0
 
-def test_check_url_bad_response(httpx_mock):
+
+def test_check_website_404(httpx_mock):
     url = 'http://www.google.com.doesnotexist'
     pattern = 'google'
     httpx_mock.add_response(status_code=404, data=f"")
@@ -61,7 +62,7 @@ def test_check_url_bad_response(httpx_mock):
     assert event.response_time_seconds > 0
 
 
-def test_check_not_reponding(httpx_mock):
+def test_check_website_timeout(httpx_mock):
     url = 'http://www.google.com.doesnotexist'
     pattern = 'google'
     # no respond => httpx.TimeoutException is raised
