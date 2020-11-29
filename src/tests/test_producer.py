@@ -35,6 +35,17 @@ def test_check_no_pattern(httpx_mock):
     assert not event.found_regex_pattern
     assert event.response_time_seconds > 0
 
+def test_check_website_no_regex_given(httpx_mock):
+    url = 'http://www.google.com.doesnotexist'
+    httpx_mock.add_response(data=f"blablablkdsflkjdsf kjgdsfk kjsadksajfg")
+
+    event = checkweb.producer.check_website(url, None)
+
+    assert isinstance(event, checkweb.check_event.CheckEvent)
+    assert event.url == url
+    assert event.status_code == 200
+    assert event.found_regex_pattern is None
+    assert event.response_time_seconds > 0
 
 def test_check_url_bad_response(httpx_mock):
     url = 'http://www.google.com.doesnotexist'
@@ -66,10 +77,9 @@ def test_check_not_reponding(httpx_mock):
 
 # Mock docs: https://docs.python.org/3/library/unittest.mock.html
 
-@pytest.mark.parametrize('count', [1, 2])
-def test_run_producer(httpx_mock, count):
+@pytest.mark.parametrize('count,pattern', [(1, 'google'), (2, None)])
+def test_run_producer(httpx_mock, count, pattern):
     url = 'http://www.google.com.doesnotexist'
-    pattern = 'google'
     httpx_mock.add_response(status_code=404, data=f"")
 
     mock_kafka_producer = MagicMock()
@@ -79,7 +89,7 @@ def test_run_producer(httpx_mock, count):
                               max_loops=count,
                               wait_between_scrapes=0,
                               url=url,
-                              regex=re.compile(pattern))
+                              regex=re.compile(pattern) if pattern else None)
 
     assert mock_kafka_producer.send.call_count == count
     assert mock_kafka_producer.send.call_args.args[0] == 'test_topic'

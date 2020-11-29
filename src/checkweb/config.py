@@ -17,7 +17,8 @@ class ProducerConfig():
         try:
             self.PRODUCER_INTERVAL_SECONDS = int(f"{os.environ['PRODUCER_INTERVAL_SECONDS']}")
             self.PRODUCER_SCRAPE_URL = f"{os.environ['PRODUCER_SCRAPE_URL']}"
-            self.PRODUCER_SCRAPE_REGEX = f"{os.environ['PRODUCER_SCRAPE_REGEX']}"
+            # regex checking is optional
+            self.PRODUCER_SCRAPE_REGEX = f"{os.environ.get('PRODUCER_SCRAPE_REGEX','')}"
             # 0 = don't stop
             self.PRODUCER_MAX_LOOPS = int(f"{os.environ.get('PRODUCER_MAX_LOOPS', 0)}")
         except KeyError as e:

@@ -34,7 +34,10 @@ def main():
     kafka_topic = c.KAFKA_TOPIC
 
     url = c.PRODUCER_SCRAPE_URL
-    regex = re.compile(c.PRODUCER_SCRAPE_REGEX)
+    if c.PRODUCER_SCRAPE_REGEX:
+        regex = re.compile(c.PRODUCER_SCRAPE_REGEX)
+    else:
+        regex = None
     print(f'Configured URL: {url}, regex: {c.PRODUCER_SCRAPE_REGEX}')
 
     run_producer(producer, kafka_topic, max_loops, wait_between_scrapes, url, regex)
@@ -45,7 +48,7 @@ def run_producer(kafka_producer: KafkaProducer,
                  max_loops: t.Optional[int],
                  wait_between_scrapes: int,
                  url: str,
-                 regex: re.Pattern,
+                 regex: t.Optional[re.Pattern] = None,
                  ):
     """Checks the website in a loop and sends events out via Kafka
 
@@ -73,7 +76,7 @@ def run_producer(kafka_producer: KafkaProducer,
         time.sleep(wait_between_scrapes)
 
 
-def check_website(url: str, regex: re.Pattern) -> check_event.CheckEvent:
+def check_website(url: str, regex: t.Optional[re.Pattern]) -> check_event.CheckEvent:
     """Check website for pattern
 
     :param url: the URL to check
@@ -82,15 +85,16 @@ def check_website(url: str, regex: re.Pattern) -> check_event.CheckEvent:
     """
     ts_before = time.time()
     exception_message = ""
+    found_regex_pattern = None
+    status_code = None
     try:
         r = httpx.get(url)
-        found_regex_pattern = bool(regex.search(r.text, re.MULTILINE))
+        if regex:
+            found_regex_pattern = bool(regex.search(r.text, re.MULTILINE))
         status_code = r.status_code
     except Exception as e:
         # e.g. a timeout or a DNS problem -> send the exception on so it can be investigated
         exception_message = repr(e)
-        found_regex_pattern = None
-        status_code = None
     ts_after = time.time()
     # print(f'Response text: {r.text}')
     event = check_event.CheckEvent(

@@ -14,7 +14,7 @@ class CheckEvent():
     url: str
     response_time_seconds: float
     status_code: int
-    found_regex_pattern: bool
+    found_regex_pattern: t.Optional[bool] = None
     exception_message: t.Optional[str] = None
     version: int = 1
 
