@@ -57,7 +57,7 @@ Afterwards commit `requirements.txt` and `requirements.txt.freeze`.
   
 ### Step 3: Implement testing and polish
 * [x] Implement unittests with mocks
-* [] Implement an integration test which spins up new local infra, runs a few minutes and then checks that the expected 
+* [x] Implement an integration test which spins up new local infra, runs a few loops and then checks that the expected 
   data is in the DB + the same check with failing websites
 * [] Polish the code
 

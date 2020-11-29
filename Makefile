@@ -28,9 +28,12 @@ stop-infra-local:
 	# spin down the compose stuff
 	docker-compose --env-file local.env down
 
-tests: unit-tests
+tests: unit-tests integration-tests
 
 unit-tests: setup
 	# unittests -> without infrastructure/IO
-	cd src && ../.venv/bin/python -m pytest
+	cd src && ../.venv/bin/python3 -m pytest
 
+integration-tests: setup
+	# spins up new local infra and runs 10 seconds of tests on it
+	.venv/bin/python3 ./integration_tests.py
