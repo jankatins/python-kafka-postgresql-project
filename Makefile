@@ -34,7 +34,7 @@ integration-tests: integration-tests-local
 
 integration-tests-local: setup-local
 	# spins up new local infra and runs 10 seconds of tests on it
-	.venv/bin/python3 ./integration_tests.py
+	CHECKWEB_ENV_PATH=local.env .venv/bin/python3 ./integration_tests.py
 
 
 start-infra-aiven:
@@ -48,8 +48,13 @@ stop-infra-aiven:
 list-infra-aiven:
 	avn service list
 
+# All the next targets assume that aiven infra is setup and aiven.env is configured
+
 run-aiven: start-infra-aiven
 	make -j run-producer-aiven run-consumer-aiven
 
 run-%-aiven: aiven.env
 	source .venv/bin/activate && cd src && CHECKWEB_ENV_PATH=../aiven.env python3 -m checkweb $*
+
+integration-tests-aiven: start-infra-aiven
+	CHECKWEB_ENV_PATH=aiven.env .venv/bin/python3 ./integration_tests.py

@@ -47,7 +47,7 @@ generates the `aiven.env` file which needs to be adjusted:
 make setup-infra-aiven
 ```
 
-Afterwards edit `aiven.env` to adjust the `*POSTGRES*` and `KAFKA_*` settings (`HOST`, `USER`, `PASSWORD`,...). The 
+Afterwards edit `aiven.env` to adjust the `KAFKA_*/CONSUMER_POSTGRES_*` settings. The 
 needed settings are available in the [Aiven UI of the respectiv service](https://console.aiven.io/) 
 
 Afterwards you can run the local producer/consumer against the Aiven infrastructure
@@ -55,6 +55,13 @@ Afterwards you can run the local producer/consumer against the Aiven infrastruct
 ```bash
 # this also automatically starts the Aiven infra if it was stoped
 make run-aiven
+```
+
+To run the integration tests against Aiven Infrastructure:
+
+```bash
+# Starts up Aiven infra which was stopped
+make integration-tests-aiven
 ```
 
 To stop the aiven infrastructure:
@@ -105,7 +112,7 @@ Afterwards commit `requirements.txt` and `requirements.txt.freeze`.
 
 ### Step 4: Connect to Aiven infra and document  
 * [x] Figure out how to spin up the infra via `avn` and document it
-* [ ] Run the integration tests agains Aiven Infra
+* [x] Run the integration tests agains Aiven Infra
 
 ## Sources:
 
