@@ -2,11 +2,6 @@
 
 SHELL := /bin/bash
 
-# Allow access to the local.env variables
-# from https://unix.stackexchange.com/questions/235223/makefile-include-env-file
-include local.env
-export $(shell sed 's/=.*//' local.env)
-
 # default target (=first)
 all : run-local
 
@@ -19,7 +14,7 @@ run-local: setup run-infra-local
 	echo "done."
 
 run_%_local:
-	source .venv/bin/activate && cd src && python3 -m checkweb $*
+	source .venv/bin/activate && cd src && CHECKWEB_ENV_PATH=../local.env python3 -m checkweb $*
 
 run-infra-local:
 	docker-compose --env-file local.env up -d

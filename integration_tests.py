@@ -8,13 +8,14 @@
 5) Stop the local infra
 """
 
-import shlex
 import os
+import shlex
 import time
+import uuid
 from subprocess import Popen, PIPE
 from threading import Timer
 
-import uuid
+from dotenv import load_dotenv
 
 
 def run(cmd, timeout_sec=600):
@@ -60,9 +61,11 @@ def main():
 
     print('Checking results...')
     os.environ['PGPASSWORD'] = os.environ['CONSUMER_POSTGRES_PASSWORD']
+    ssl_mode = os.environ.get('CONSUMER_POSTGRES_SSL_MODE')
     stdout, stderr = run(f"psql {test_name} --host {os.environ['CONSUMER_POSTGRES_HOST']} " +
                          f"--port {os.environ['CONSUMER_POSTGRES_PORT']} -U {test_name} " +
-                         f"-c 'SELECT count(*) FROM public.content;' ")
+                         f"--ssl-mode {ssl_mode}" if ssl_mode else "" +
+                                                                   f"-c 'SELECT count(*) FROM public.content;' ")
     print('Expecting to see a "3" (count of rows in the table) in the output and a "1 row"', stdout, stderr)
     print('Stopping local infrastructure...')
     run('docker-compose down')
@@ -71,4 +74,7 @@ def main():
 
 
 if __name__ == '__main__':
+    env_path = os.environ.get('CHECKWEB_ENV_PATH', '../local.env')
+    load_dotenv(dotenv_path=env_path)
+
     main()
