@@ -77,9 +77,11 @@ def main(is_local: bool):
     escaped_query = query.replace("'", r"\'")
     os.environ['PGPASSWORD'] = os.environ['CONSUMER_POSTGRES_PASSWORD']
     ssl_mode = os.environ.get('CONSUMER_POSTGRES_SSL_MODE')
+    if ssl_mode:
+        os.environ['PGSSLMODE'] = ssl_mode
+
     stdout, stderr = run(f"psql {os.environ['CONSUMER_POSTGRES_DB']} --host {os.environ['CONSUMER_POSTGRES_HOST']} " +
                          f"--port {os.environ['CONSUMER_POSTGRES_PORT']} -U {os.environ['CONSUMER_POSTGRES_USER']} " +
-                         (f"--set=sslmode={ssl_mode} " if ssl_mode else "") +
                          f"--tuples-only " +
                          f"-c '{escaped_query}' ", timeout_sec=3)
     if stderr.decode(encoding='utf8').strip():
